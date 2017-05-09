@@ -51,6 +51,7 @@ screen_h = pygame.display.Info().current_h
 #Comando per scrivere un messaggio nella barra della myWindow
 pygame.display.set_caption("Smart Mirror")
 
+# Useless with pygame.init() -> http://www.pygame.org/docs/ref/font.html#pygame.font.init
 pygame.font.init()
 
 # Loading local font
@@ -95,6 +96,7 @@ def printText(vett):
     text2_rect_w = text2_rect.width
     text2_rect_h = text2_rect.height + text_rect_h
 
+    # Printing two lines of text, centered
     myWindow.blit(text, (screen_w / 2 - text_rect_w / 2, screen_h /2 - text_rect_h / 2))
     myWindow.blit(text2, (screen_w / 2 - text2_rect_w / 2, screen_h /2 + text_rect_h / 2))
 
@@ -118,16 +120,16 @@ while True:
     myWindow.fill(pygame.Color("black"))
 
     # Getting PIR sensor data
-    i=GPIO.input(pirPort)
+    pirData=GPIO.input(pirPort)
 
     # sensor output -> LOW
-    if i==0:
-         print("No intruders",i)
+    if pirData==0:
+         print("No intruders",pirData)
          #GPIO.output(ledPort, 0)  #Turn OFF LED
          sleep(0.1)
     # sensor output -> HIGH
-    if i==1:
-        print("Intruder detected",i)
+    if pirData==1:
+        print("Intruder detected",pirData)
         #GPIO.output(ledPort, 1)  #Turn ON LED
         printText(vett)
         sleep(0.1)
