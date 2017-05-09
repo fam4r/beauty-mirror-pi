@@ -1,20 +1,14 @@
 #################################################
 #
-# Author: FabLab Romagna by Nicolas Farabegoli - Fabrizio Margotta
+# Carducci-Mirror
+#
+# Author:
+#   Fabrizio Margotta - Nicolas Farabegoli
+#       for FabLab Romagna
 # Version: 0.6
-#
-#   TODO:
-#       - check uscita prima di stampare la scritta (o multi-threading)
-#       - liste (vettori non esistono in python?)
-#       - liste su file
-#       - storie
-#       - OK font
-#       - "favicon"
-#
 #
 #################################################
 
-#Comando per caricare la libreria pygame
 import pygame
 import random
 import RPi.GPIO as GPIO
@@ -24,13 +18,14 @@ from sys import exit
 print("\t\tWelcome to Smart Mirror Project by FabLab Romagna")
 print("Please exit with ESC or ALT+F4 or CTRL+C")
 
-portaLed = 27
-portaPIR = 17
+#ledPort = 27
+pirPort = 17
 
+# Raspberry GPIO initialization
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(portaPIR, GPIO.IN)         #Read output from PIR motion sensor
-GPIO.setup(portaLed, GPIO.OUT)         #LED output pin
+GPIO.setup(pirPort, GPIO.IN)         #Read output from PIR motion sensor
+#GPIO.setup(ledPort, GPIO.OUT)         #LED output pin
 
 #Comando per le operazioni preparatorie
 stop = False
@@ -40,12 +35,12 @@ pygame.init()
 
 #print pygame.font.match_font('')
 
-#Comando per la creazione della finestra grafica
-#finestra = pygame.display.set_mode([1366, 768], pygame.FULLSCREEN)
+#Comando per la creazione della myWindow grafica
+#myWindow = pygame.display.set_mode([1366, 768], pygame.FULLSCREEN)
 ################################################################################## SOLO PER TEST
-finestra = pygame.display.set_mode([800,600])
+myWindow = pygame.display.set_mode([800,600])
 
-# Ricavo altezza e larghezza finestra
+# Ricavo altezza e larghezza myWindow
 screen_w = pygame.display.Info().current_w
 screen_h = pygame.display.Info().current_h
 
@@ -53,19 +48,16 @@ screen_h = pygame.display.Info().current_h
 # It seems it needs a Surface Object...
 #pygame.display.set_icon(pygame.Surface((32, 32), flags=0, depth=0, masks=None))
 
-#Comando per scrivere un messaggio nella barra della finestra
+#Comando per scrivere un messaggio nella barra della myWindow
 pygame.display.set_caption("Smart Mirror")
 
 pygame.font.init()
 
 # Loading local font
-font = pygame.font.Font("OpenSans-Light.ttf", 100)
+font = pygame.font.Font("fonts/OpenSans-Light.ttf", 100)
 
-# Loading texts
-# vett = [
-#     ["Intro1", "Text1_1", "Text1_2", "Text1_3"],
-#     ["Intro2", "Text2_1", "Text2_2", "Text2_3"]
-# ]
+# Loading texts (two objects displayed)
+# Blank line -> one object displayed
 vett = [ "Guarda con attenzione",
          "",
          "Non cercare",
@@ -83,6 +75,7 @@ vett = [ "Guarda con attenzione",
 def getRand(myList):
     random.seed()
     rand = random.randrange(0, len(vett))
+    # Forcing odd random numer
     if ((rand % 2)):
         rand -= 1
     return rand
@@ -102,22 +95,16 @@ def printText(vett):
     text2_rect_w = text2_rect.width
     text2_rect_h = text2_rect.height + text_rect_h
 
-    finestra.blit(text, (screen_w / 2 - text_rect_w / 2, screen_h /2 - text_rect_h / 2))
-    finestra.blit(text2, (screen_w / 2 - text2_rect_w / 2, screen_h /2 + text_rect_h / 2))
+    myWindow.blit(text, (screen_w / 2 - text_rect_w / 2, screen_h /2 - text_rect_h / 2))
+    myWindow.blit(text2, (screen_w / 2 - text2_rect_w / 2, screen_h /2 + text_rect_h / 2))
 
-    # DO NOT REMOVE THIS
+    # DO NOT REMOVE THAT LINE
     pygame.display.update()
 
-def printPhrase():
-    # We want to print a random
-    for elem in vett[getRand(vett)]:
-        print (elem)
-        finestra.fill(pygame.Color("black")) # erases the entire screen surface
-        printText(elem)
-        sleep(1)
-
-# Inizio del ciclo di gestione del gioco (GAME LOOP)
+# Starting "Game Loop"
 while True:
+
+    # Detecting pressed keys to quit (ESC, ALT+F4, CTRL+C)
     for event in pygame.event.get():
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT or (keys[pygame.K_ESCAPE] or (keys[pygame.K_LALT] and keys[pygame.K_F4]) or (keys[pygame.K_LCTRL] and keys[pygame.K_c])):
@@ -127,21 +114,25 @@ while True:
         # elif event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_ESCAPE or event.key == pygame.K_LALT and event.key == pygame
 
-    finestra.fill(pygame.Color("black")) # erases the entire screen surface
+    # erases the entire screen surface
+    myWindow.fill(pygame.Color("black"))
 
     # Getting PIR sensor data
-    i=GPIO.input(portaPIR)
-    if i==0:                 #When output from motion sensor is LOW
+    i=GPIO.input(pirPort)
+
+    # sensor output -> LOW
+    if i==0:
          print("No intruders",i)
-         #GPIO.output(portaLed, 0)  #Turn OFF LED
+         #GPIO.output(ledPort, 0)  #Turn OFF LED
          sleep(0.1)
-    if i==1:               #When output from motion sensor is HIGH
+    # sensor output -> HIGH
+    if i==1:
         print("Intruder detected",i)
-        #GPIO.output(portaLed, 1)  #Turn ON LED
-        #printPhrase()
+        #GPIO.output(ledPort, 1)  #Turn ON LED
         printText(vett)
         sleep(0.1)
         sleep(2)
 
 
+    # Refreshing screen
     pygame.display.flip()
