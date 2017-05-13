@@ -36,9 +36,9 @@ pygame.init()
 #print pygame.font.match_font('')
 
 #Comando per la creazione della myWindow grafica
-#myWindow = pygame.display.set_mode([1366, 768], pygame.FULLSCREEN)
+myWindow = pygame.display.set_mode([1280,1024], pygame.FULLSCREEN)
 ################################################################################## SOLO PER TEST
-myWindow = pygame.display.set_mode([800,600])
+#myWindow = pygame.display.set_mode([800,600])
 
 # Ricavo altezza e larghezza myWindow
 screen_w = pygame.display.Info().current_w
