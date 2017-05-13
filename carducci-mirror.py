@@ -9,23 +9,37 @@
 #
 #################################################
 
-import pygame
-import random
-import RPi.GPIO as GPIO
-from time import sleep
-from sys import exit
 
 print("\t\tWelcome to Smart Mirror Project by FabLab Romagna")
 print("Please exit with ESC or ALT+F4 or CTRL+C")
 
+import sys
+import pygame
+import random
+try:
+    import RPi.GPIO as GPIO
+    rasp = True
+except Exception as e:
+    print("WARNING: Not running on a Raspberry...\n")
+    rasp = False
+from time import sleep
+
+if ('-h' in str(sys.argv) or '--help' in str(sys.argv)):
+    print("Usage: python3 ./carducci-mirror.py [--nofullscreen]")
+    print("\t-h, --help\t\tShow this help message and exit")
+    print("\t--nofullscreen\t\tExecute program in window mode (800x600)")
+    sys.exit()
+
 #ledPort = 27
 pirPort = 17
+pirData = 1
 
 # Raspberry GPIO initialization
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pirPort, GPIO.IN)         #Read output from PIR motion sensor
-#GPIO.setup(ledPort, GPIO.OUT)         #LED output pin
+if rasp:
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pirPort, GPIO.IN)         #Read output from PIR motion sensor
+    #GPIO.setup(ledPort, GPIO.OUT)         #LED output pin
 
 #Comando per le operazioni preparatorie
 stop = False
@@ -35,24 +49,25 @@ pygame.init()
 
 #print pygame.font.match_font('')
 
-#Comando per la creazione della myWindow grafica
-myWindow = pygame.display.set_mode([1280,1024], pygame.FULLSCREEN)
-################################################################################## SOLO PER TEST
-#myWindow = pygame.display.set_mode([800,600])
-
 # Ricavo altezza e larghezza myWindow
 screen_w = pygame.display.Info().current_w
 screen_h = pygame.display.Info().current_h
+
+#Comando per la creazione della myWindow grafica
+if ('--nofullscreen' in str(sys.argv)):
+    screen_w = 800
+    screen_h = 600
+    myWindow = pygame.display.set_mode([screen_w, screen_h])
+else:
+    print(pygame.display.Info())
+    myWindow = pygame.display.set_mode([screen_w, screen_h], pygame.FULLSCREEN)
 
 # Setting up program icon BEFORE program caption (see later)
 # It seems it needs a Surface Object...
 #pygame.display.set_icon(pygame.Surface((32, 32), flags=0, depth=0, masks=None))
 
 #Comando per scrivere un messaggio nella barra della myWindow
-pygame.display.set_caption("Smart Mirror")
-
-# Useless with pygame.init() -> http://www.pygame.org/docs/ref/font.html#pygame.font.init
-pygame.font.init()
+pygame.display.set_caption("Carducci Mirror by FabLab Romagna")
 
 # Loading local font
 font = pygame.font.Font("fonts/OpenSans-Light.ttf", 100)
@@ -101,26 +116,31 @@ def printText(vett):
     myWindow.blit(text2, (screen_w / 2 - text2_rect_w / 2, screen_h /2 + text_rect_h / 2))
 
     # DO NOT REMOVE THAT LINE
+    isQuitting()
     pygame.display.update()
+    #pygame.display.flip()
 
-# Starting "Game Loop"
-while True:
-
+def isQuitting():
     # Detecting pressed keys to quit (ESC, ALT+F4, CTRL+C)
     for event in pygame.event.get():
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT or (keys[pygame.K_ESCAPE] or (keys[pygame.K_LALT] and keys[pygame.K_F4]) or (keys[pygame.K_LCTRL] and keys[pygame.K_c])):
             # Comando per chiudere la libreria grafica
             pygame.quit()
-            exit()
+            sys.exit()
         # elif event.type == pygame.KEYDOWN:
         #     if event.key == pygame.K_ESCAPE or event.key == pygame.K_LALT and event.key == pygame
+
+# Starting "Game Loop"
+while True:
+    isQuitting()
 
     # erases the entire screen surface
     myWindow.fill(pygame.Color("black"))
 
     # Getting PIR sensor data
-    pirData=GPIO.input(pirPort)
+    if rasp:
+        pirData=GPIO.input(pirPort)
 
     # sensor output -> LOW
     if pirData==0:
@@ -134,7 +154,6 @@ while True:
         printText(vett)
         sleep(0.1)
         sleep(2)
-
 
     # Refreshing screen
     pygame.display.flip()
