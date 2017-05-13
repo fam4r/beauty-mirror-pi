@@ -5,7 +5,7 @@ by famar and nicolasfara for FabLabRomagna
 Using pygame, made for Raspberry Pi.
 Tested on Raspberry Pi 3.
 
-Requirements:
+## Requirements:
 - Raspberry Pi 3
 - python3
 - pygame
@@ -14,9 +14,10 @@ Requirements:
   - [Docs](http://www.pygame.org/docs/)
 - PIR sensor
 
-Getting started:
+## Getting started:
+
+Clone the repo and enter into the folder, then exec following commands.
+
 ```shellsession
-git clone https://github.com/crash-it/carducci-mirror.git
-cd carducci-mirror
-python3 smartmirror.py
+python3 carducci-mirror.py
 ```
