@@ -1,4 +1,4 @@
-# Carducci-Mirror
+# Beauty Mirror Pi
 
 by famar and [nicolasfara](https://github.com/nicolasfara) for FabLabRomagna
 
@@ -18,7 +18,7 @@ Tested on Raspberry Pi 3.
 
 Clone the repo and enter into the folder, then exec following commands.
 
-```shellsession
+```bash
 # Install pygame
 pip install pygame --user
 # Check if it's installed correctly
