@@ -1,6 +1,6 @@
 # Carducci-Mirror
 
-by famar and nicolasfara for FabLabRomagna
+by famar and [nicolasfara](https://github.com/nicolasfara) for FabLabRomagna
 
 Using pygame, made for Raspberry Pi.
 Tested on Raspberry Pi 3.
@@ -19,5 +19,10 @@ Tested on Raspberry Pi 3.
 Clone the repo and enter into the folder, then exec following commands.
 
 ```shellsession
-python3 carducci-mirror.py
+# Install pygame
+pip install pygame --user
+# Check if it's installed correctly
+python -m pygame.examples.aliens
+# Exec beauty-mirror-pi.py
+python3 beauty-mirror-pi.py
 ```
