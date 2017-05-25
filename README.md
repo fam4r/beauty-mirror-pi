@@ -26,3 +26,12 @@ python -m pygame.examples.aliens
 # Exec beauty-mirror-pi.py
 python3 beauty-mirror-pi.py
 ```
+
+To open it at startup (works with Raspbian Pixel DE):
+`nano ./boot_at_startup` and change the path to the `.py` file.
+
+Then
+```shell
+nano ~/.config/lxsession/LXDE-pi/autostart
+@/path/to/repo/start_at_boot.sh
+```
