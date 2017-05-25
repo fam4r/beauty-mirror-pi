@@ -19,6 +19,7 @@ if ('-h' in str(sys.argv) or '--help' in str(sys.argv)):
     print("Usage: python3 ./carducci-mirror.py [--nofullscreen]")
     print("\t-h, --help\t\tShow this help message and exit")
     print("\t--nofullscreen\t\tExecute program in window mode (800x600)")
+    print("\t-d, --debug\t\tLow delay between texts")
     sys.exit()
 
 import pygame
@@ -34,6 +35,8 @@ from time import sleep
 #ledPort = 27
 pirPort = 17
 pirData = 1
+fontSize = 90
+delayTime = 15
 
 # Raspberry GPIO initialization
 if rasp:
@@ -61,6 +64,8 @@ else:
     screen_h = pygame.display.Info().current_h
     screen_w = pygame.display.Info().current_w
     myWindow = pygame.display.set_mode([screen_w, screen_h], pygame.FULLSCREEN)
+    # Fullscreen mode -> no mouse pointer
+    pygame.mouse.set_visible(False)
 
 # Setting up program icon BEFORE program caption (see later)
 # It seems it needs a Surface Object...
@@ -70,7 +75,7 @@ else:
 pygame.display.set_caption("Beauty Mirror Pi by FabLab Romagna")
 
 # Loading local font
-font = pygame.font.Font("fonts/OpenSans-Light.ttf", 100)
+font = pygame.font.Font("fonts/OpenSans-Light.ttf", fontSize)
 
 # Loading texts (two objects displayed)
 # Blank line -> one object displayed
@@ -147,13 +152,16 @@ while True:
          print("No intruders",pirData)
          #GPIO.output(ledPort, 0)  #Turn OFF LED
          sleep(0.1)
+
     # sensor output -> HIGH
     if pirData==1:
         print("Intruder detected",pirData)
         #GPIO.output(ledPort, 1)  #Turn ON LED
         printText(vett)
         sleep(0.1)
-        sleep(15)
+        if ('-d' in str(sys.argv) or '--debug' in str(sys.argv)):
+            delayTime = 5
+        sleep(delayTime)
 
     # Refreshing screen
     pygame.display.flip()
