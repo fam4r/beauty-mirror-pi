@@ -10,7 +10,7 @@ Tested on Raspberry Pi 3.
 - python3
 - pygame
   - [Website](http://www.pygame.org/wiki/about)
-  - [Installation](http://www.pygame.org/wiki/GettingStarted) (see later)
+  - [Installation](http://www.pygame.org/wiki/GettingStarted) (see later - already installed on Raspbian)
   - [Docs](http://www.pygame.org/docs/)
 - PIR sensor
 
