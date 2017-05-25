@@ -35,7 +35,7 @@ from time import sleep
 #ledPort = 27
 pirPort = 17
 pirData = 1
-fontSize = 90
+fontSize = 80
 delayTime = 15
 
 # Raspberry GPIO initialization
